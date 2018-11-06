@@ -70,3 +70,17 @@ function alertDbSave(success) {
         alert("Data saved successfully");
     }
 }
+
+function getChart1(dates, prices, vols, avgprice, avgvol) {
+    var ctx = document.getElementById("myChart").getContext('2d');
+
+    var myChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: dates.split(","),
+            datasets: [{
+                data: prices.split(",")
+            }]
+        }
+    });
+}
