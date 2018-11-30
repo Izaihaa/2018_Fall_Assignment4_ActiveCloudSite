@@ -77,5 +77,21 @@ namespace IEXTrading.Infrastructure.IEXTradingHandler
 
             return Equities;
         }
+
+        public void getFinancials()
+        {
+            string IEXTrading_API_PATH = BASE_URL + "/stock/aapl/financials?period=quarter";
+            string financialDetails = "";
+            httpClient.BaseAddress = new Uri(IEXTrading_API_PATH);
+            HttpResponseMessage response = httpClient.GetAsync(IEXTrading_API_PATH).GetAwaiter().GetResult();
+            if (response.IsSuccessStatusCode)
+            {
+                financialDetails = response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            }
+            if (!financialDetails.Equals(""))
+            {
+                Console.Write(financialDetails);
+            }
+        }
     }
 }

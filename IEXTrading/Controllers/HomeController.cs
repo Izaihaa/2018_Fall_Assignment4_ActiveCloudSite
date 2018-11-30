@@ -167,6 +167,5 @@ namespace MVCTemplate.Controllers
             double avgvol = equities.Average(e => e.volume) / 1000000; //Divide volume by million
             return new CompaniesEquities(companies, equities.Last(), dates, prices, volumes, avgprice, avgvol);
         }
-
     }
 }

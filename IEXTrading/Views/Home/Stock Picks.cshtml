@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Stock Picks";
 }
 
 <h2>IEX Trading Application</h2>
@@ -14,9 +14,9 @@
         <a href="https://iextrading.com/developer/docs/#reference-data">IEX Reference API </a> and displays the results.
         This data can also be saved in the local database.
         <br />
-        The <a asp-area="" asp-controller="Home" asp-action="Chart">Chart</a> tab let's you select a Company and produces a chart from
+        The <a asp-area="" asp-controller="Home" asp-action="Quote">Quote</a> tab let's you select a Company(symbol) and fetches a quote from
         <a href="https://iextrading.com/developer/docs/#stocks">IEX Stock API</a>.
-        The chart can also be saved in the local database.
+        The quote can also be saved in the local database.
         <br />
         The <a asp-area="" asp-controller="Home" asp-action="Refresh">Refresh</a> tab let's you refresh the local database, that is, remove all its contents.
     </p>
