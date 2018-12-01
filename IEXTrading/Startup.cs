@@ -23,10 +23,19 @@ namespace MVCTemplate
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration["Data:IEXTrading:ConnectionString"]));
+            services.AddDbContext<ApplicationDbContext>(options =>            
+            options.UseSqlServer(Configuration["Data:IEXTrading:ConnectionString"]));
+
             services.AddMvc();
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -48,9 +57,10 @@ namespace MVCTemplate
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
+            app.UseHttpMethodOverride();
             app.UseStaticFiles();
-
+            app.UseCookiePolicy();
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

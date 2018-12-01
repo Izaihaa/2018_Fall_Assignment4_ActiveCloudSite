@@ -9,12 +9,15 @@ using IEXTrading.Models;
 using IEXTrading.Models.ViewModel;
 using IEXTrading.DataAccess;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Http;
 
 namespace MVCTemplate.Controllers
 {
     public class HomeController : Controller
     {
         public ApplicationDbContext dbContext;
+
+        //public string SessionKeyName { get; set; }
 
         public HomeController(ApplicationDbContext context)
         {
@@ -40,6 +43,9 @@ namespace MVCTemplate.Controllers
          * The Symbols action calls the GetSymbols method that returns a list of Companies.
          * This list of Companies is passed to the Symbols View.
         ****/
+
+        public string SessionKeyName="";
+        
         public IActionResult Symbols()
         {
             //Set ViewBag variable first
@@ -47,10 +53,13 @@ namespace MVCTemplate.Controllers
             IEXHandler webHandler = new IEXHandler();
             List<Company> companies = webHandler.GetSymbols();
 
-            //Save comapnies in TempData
-            TempData["Companies"] = JsonConvert.SerializeObject(companies);
+            String companiesData = JsonConvert.SerializeObject(companies);
+            //int size = System.Text.ASCIIEncoding.ASCII.GetByteCount(companiesData);
+
+            HttpContext.Session.SetString(SessionKeyName, companiesData);
 
             return View(companies);
+            
         }
 
         /****
@@ -93,11 +102,20 @@ namespace MVCTemplate.Controllers
         ****/
         public IActionResult PopulateSymbols()
         {
-            List<Company> companies = JsonConvert.DeserializeObject<List<Company>>(TempData["Companies"].ToString());
+            // reading JSON from the Session
+            string companiesData = HttpContext.Session.GetString(SessionKeyName);
+            List<Company> companies = null;
+            if (companiesData != "")
+            {
+                companies = JsonConvert.DeserializeObject<List<Company>>(companiesData);
+            }
+
             foreach (Company company in companies)
             {
-                //Database will give PK constraint violation error when trying to insert record with existing PK.
-                //So add company only if it doesnt exist, check existence using symbol (PK)
+                //Database will give PK constraint violation error when trying to insert a record with existing PK.
+                //So add company only if it doesn't exist, check its existence using symbol (PK)
+
+
                 if (dbContext.Companies.Where(c => c.symbol.Equals(company.symbol)).Count() == 0)
                 {
                     dbContext.Companies.Add(company);
@@ -107,6 +125,7 @@ namespace MVCTemplate.Controllers
             ViewBag.dbSuccessComp = 1;
             return View("Symbols", companies);
         }
+
 
         /****
          * Saves the equities in database.
