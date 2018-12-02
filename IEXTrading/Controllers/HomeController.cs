@@ -36,6 +36,8 @@ namespace MVCTemplate.Controllers
 
         public IActionResult Stock_Picks()
         {
+
+
             return View();
         }
 
